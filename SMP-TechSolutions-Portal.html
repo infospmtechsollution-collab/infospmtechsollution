@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SMP Tech Solutions – School Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1565C0;--blue-mid:#1976D2;--blue-light:#2196F3;--blue-pale:#E3F2FD;
+  --yellow:#FFD600;--yellow-d:#F9A825;
+  --dark:#0A1628;--dark2:#111E33;--dark3:#1A2940;
+  --white:#fff;--gray:#6B7A99;--light:#F4F7FB;--border:#E0E8F4;
+  --green:#00C47D;--red:#F44336;--orange:#FF9800;
+  --h:'Syne',sans-serif;--b:'DM Sans',sans-serif;
+  --r:12px;--shadow:0 4px 24px rgba(10,22,40,0.1);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--b);background:var(--light);color:var(--dark);font-size:14px;line-height:1.6;overflow-x:hidden}
+button{cursor:pointer;font-family:var(--b)}
+a{text-decoration:none;color:inherit}
+input,textarea,select{font-family:var(--b)}
+
+/* ── PAGE ROUTER ── */
+.page{display:none}
+.page.active{display:block}
+
+/* ══════════════════════════════════════
+   LANDING PAGE
+══════════════════════════════════════ */
+#landing{background:var(--dark)}
+
+/* NAV */
+.ln-nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 5%;
+  background:rgba(10,22,40,0.9);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-logo-box{width:36px;height:36px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.nav-name{font-family:var(--h);font-size:1.1rem;font-weight:800;color:var(--white)}
+.nav-name span{color:var(--yellow)}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-links a{color:rgba(255,255,255,0.65);font-size:.88rem;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--white)}
+.nav-btn{background:var(--yellow);color:var(--dark);padding:.5rem 1.2rem;border-radius:6px;font-weight:700;font-size:.85rem;border:none;transition:all .2s}
+.nav-btn:hover{background:#ffe033;transform:translateY(-1px)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding:6rem 5% 4rem;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(33,150,243,0.05)1px,transparent 1px),linear-gradient(90deg,rgba(33,150,243,0.05)1px,transparent 1px);background-size:50px 50px}
+.hero-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(21,101,192,0.2),transparent 70%);top:-100px;right:-100px}
+.hero-glow2{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(255,214,0,0.08),transparent 70%);bottom:0;left:5%}
+.hero-content{max-width:620px;position:relative;z-index:2}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,214,0,0.12);border:1px solid rgba(255,214,0,0.3);color:var(--yellow);padding:.35rem 1rem;border-radius:30px;font-size:.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:1.5rem}
+.hero-badge::before{content:'';width:6px;height:6px;background:var(--yellow);border-radius:50%;animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+h1.hero-title{font-family:var(--h);font-size:clamp(2.2rem,5vw,3.6rem);font-weight:800;color:var(--white);line-height:1.1;letter-spacing:-1px;margin-bottom:1.2rem}
+h1.hero-title .acc{background:linear-gradient(135deg,var(--blue-light),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{color:rgba(255,255,255,0.6);font-size:1rem;max-width:480px;margin-bottom:2.5rem;line-height:1.7}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:3rem}
+.btn-prim{background:linear-gradient(135deg,var(--blue),var(--blue-light));color:#fff;padding:.85rem 2rem;border-radius:8px;font-weight:700;font-size:.95rem;border:none;transition:all .2s;box-shadow:0 4px 20px rgba(21,101,192,0.4)}
+.btn-prim:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(21,101,192,0.5)}
+.btn-sec{background:transparent;color:var(--white);padding:.85rem 2rem;border-radius:8px;font-weight:500;font-size:.95rem;border:1px solid rgba(255,255,255,0.2);transition:all .2s}
+.btn-sec:hover{border-color:var(--yellow);color:var(--yellow)}
+.hero-stats{display:flex;gap:2rem}
+.hstat{border-left:2px solid rgba(21,101,192,0.5);padding-left:12px}
+.hstat-n{font-family:var(--h);font-size:1.6rem;font-weight:800;color:var(--yellow)}
+.hstat-l{font-size:.75rem;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:.8px}
+
+/* SECTIONS */
+.section{padding:5rem 5%;background:var(--dark2);position:relative}
+.section.light{background:var(--light)}
+.section-inner{max-width:1100px;margin:0 auto}
+.sec-tag{font-size:.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue-light);margin-bottom:.5rem}
+.sec-title{font-family:var(--h);font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;margin-bottom:.75rem;color:var(--white)}
+.section.light .sec-title{color:var(--dark)}
+.sec-sub{color:rgba(255,255,255,0.5);max-width:480px;margin-bottom:2.5rem;font-size:.95rem}
+.section.light .sec-sub{color:var(--gray)}
+
+/* SERVICE CARDS */
+.svc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem}
+.svc-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r);padding:1.6rem;transition:all .25s;position:relative;overflow:hidden}
+.svc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--yellow));transform:scaleX(0);transition:transform .3s}
+.svc-card:hover{border-color:rgba(33,150,243,0.3);transform:translateY(-3px)}
+.svc-card:hover::before{transform:scaleX(1)}
+.svc-ico{width:44px;height:44px;background:rgba(33,150,243,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1rem}
+.svc-card h3{font-family:var(--h);font-size:1rem;font-weight:700;color:var(--white);margin-bottom:.4rem}
+.svc-card p{color:rgba(255,255,255,0.5);font-size:.875rem;line-height:1.6}
+
+/* PRICING */
+.price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem}
+.price-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.8rem;transition:all .25s;position:relative}
+.price-card.pop{border-color:var(--blue);box-shadow:0 0 30px rgba(21,101,192,0.15)}
+.pop-tag{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--blue),var(--blue-light));color:#fff;font-size:.7rem;font-weight:700;padding:.25rem .9rem;border-radius:20px;white-space:nowrap;letter-spacing:.5px}
+.p-name{font-family:var(--h);font-size:.85rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:.75rem}
+.p-price{font-family:var(--h);font-size:2rem;font-weight:800;color:var(--blue);line-height:1}
+.p-price small{font-size:.85rem;font-weight:400;color:var(--gray)}
+.p-desc{font-size:.8rem;color:var(--gray);margin:.4rem 0 1rem}
+.p-feats{list-style:none;margin-bottom:1.4rem}
+.p-feats li{font-size:.85rem;color:var(--gray);padding:.3rem 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem}
+.p-feats li::before{content:'✓';color:var(--green);font-weight:700}
+.p-btn{display:block;text-align:center;padding:.7rem;border-radius:8px;font-weight:600;font-size:.88rem;transition:all .2s;border:none;width:100%}
+.p-btn.outline{border:1.5px solid var(--border);background:transparent;color:var(--dark)}
+.p-btn.outline:hover{border-color:var(--blue);color:var(--blue)}
+.p-btn.filled{background:linear-gradient(135deg,var(--blue),var(--blue-light));color:#fff}
+.p-btn.filled:hover{opacity:.9}
+
+/* FOOTER */
+.ln-footer{background:var(--dark);border-top:1px solid rgba(255,255,255,0.08);padding:2rem 5%;text-align:center}
+.ln-footer p{color:rgba(255,255,255,0.3);font-size:.82rem}
+.ln-footer strong{color:var(--yellow)}
+
+/* ══════════════════════════════════════
+   LOGIN PAGE
+══════════════════════════════════════ */
+#login{min-height:100vh;background:var(--dark);display:flex;align-items:center;justify-content:center;padding:2rem}
+.login-wrap{width:100%;max-width:420px}
+.login-logo{text-align:center;margin-bottom:2rem}
+.login-logo-box{width:56px;height:56px;background:var(--blue);border-radius:14px;display:inline-flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:.75rem}
+.login-brand{font-family:var(--h);font-size:1.3rem;font-weight:800;color:var(--white)}
+.login-brand span{color:var(--yellow)}
+.login-sub{font-size:.85rem;color:rgba(255,255,255,0.45);margin-top:.25rem}
+.login-card{background:var(--dark2);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:2rem}
+.login-tabs{display:flex;gap:4px;background:rgba(255,255,255,0.05);border-radius:8px;padding:4px;margin-bottom:1.5rem}
+.ltab{flex:1;padding:.5rem;border-radius:6px;border:none;background:transparent;color:rgba(255,255,255,0.5);font-size:.85rem;font-weight:600;transition:all .2s}
+.ltab.active{background:var(--blue);color:#fff}
+.form-group{margin-bottom:1.1rem}
+.form-group label{display:block;font-size:.8rem;font-weight:600;color:rgba(255,255,255,0.6);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.5px}
+.form-group input,.form-group select{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--white);padding:.7rem 1rem;border-radius:8px;font-size:.9rem;outline:none;transition:border-color .2s}
+.form-group input:focus,.form-group select:focus{border-color:var(--blue-light)}
+.form-group input::placeholder{color:rgba(255,255,255,0.3)}
+.form-group select option{background:var(--dark2)}
+.login-btn{width:100%;background:linear-gradient(135deg,var(--blue),var(--blue-light));color:#fff;padding:.85rem;border-radius:8px;font-weight:700;font-size:.95rem;border:none;transition:all .2s;margin-top:.5rem}
+.login-btn:hover{opacity:.9;transform:translateY(-1px)}
+.login-back{text-align:center;margin-top:1rem}
+.login-back a{color:rgba(255,255,255,0.4);font-size:.82rem}
+.login-back a:hover{color:var(--yellow)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+
+/* ══════════════════════════════════════
+   DASHBOARD
+══════════════════════════════════════ */
+#dashboard{min-height:100vh;background:var(--light);display:flex}
+
+/* SIDEBAR */
+.sidebar{width:240px;min-height:100vh;background:var(--dark);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:50}
+.sb-head{padding:1.2rem 1rem;border-bottom:1px solid rgba(255,255,255,0.07)}
+.sb-brand{font-family:var(--h);font-size:1rem;font-weight:800;color:var(--white)}
+.sb-brand span{color:var(--yellow)}
+.sb-school{font-size:.75rem;color:rgba(255,255,255,0.4);margin-top:2px}
+.sb-nav{flex:1;padding:1rem 0}
+.sb-section{font-size:.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.25);padding:.5rem 1rem .3rem;margin-top:.5rem}
+.sb-item{display:flex;align-items:center;gap:.75rem;padding:.65rem 1rem;color:rgba(255,255,255,0.55);font-size:.88rem;font-weight:500;border-radius:0;transition:all .2s;cursor:pointer;border-left:3px solid transparent}
+.sb-item:hover{color:var(--white);background:rgba(255,255,255,0.05)}
+.sb-item.active{color:var(--white);background:rgba(21,101,192,0.2);border-left-color:var(--blue-light)}
+.sb-item .ico{font-size:1rem;width:20px;text-align:center}
+.sb-bottom{padding:1rem;border-top:1px solid rgba(255,255,255,0.07)}
+.sb-user{display:flex;align-items:center;gap:.6rem}
+.sb-avatar{width:32px;height:32px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:#fff}
+.sb-uname{font-size:.85rem;font-weight:600;color:var(--white)}
+.sb-urole{font-size:.72rem;color:rgba(255,255,255,0.4)}
+.sb-logout{margin-left:auto;background:none;border:none;color:rgba(255,255,255,0.35);font-size:1rem;padding:4px;cursor:pointer;transition:color .2s}
+.sb-logout:hover{color:var(--red)}
+
+/* MAIN CONTENT */
+.dash-main{margin-left:240px;flex:1;display:flex;flex-direction:column}
+.dash-topbar{background:var(--white);border-bottom:1px solid var(--border);padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40}
+.topbar-title{font-family:var(--h);font-size:1.1rem;font-weight:800;color:var(--dark)}
+.topbar-right{display:flex;align-items:center;gap:1rem}
+.notif-btn{position:relative;background:var(--light);border:1px solid var(--border);border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer}
+.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--red);border-radius:50%;border:2px solid var(--white)}
+.topbar-chip{display:flex;align-items:center;gap:.4rem;background:rgba(0,196,125,0.1);border:1px solid rgba(0,196,125,0.2);color:var(--green);padding:.3rem .8rem;border-radius:20px;font-size:.78rem;font-weight:600}
+.topbar-chip::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%}
+
+.dash-content{padding:1.5rem 2rem;flex:1}
+
+/* PANEL */
+.d-panel{display:none}
+.d-panel.active{display:block}
+
+/* STAT CARDS */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.2rem;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.stat-card.blue::before{background:var(--blue)}
+.stat-card.yellow::before{background:var(--yellow)}
+.stat-card.green::before{background:var(--green)}
+.stat-card.red::before{background:var(--red)}
+.stat-label{font-size:.75rem;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.4rem}
+.stat-val{font-family:var(--h);font-size:1.6rem;font-weight:800;color:var(--dark)}
+.stat-sub{font-size:.75rem;color:var(--gray);margin-top:.2rem}
+.stat-ico{position:absolute;right:1rem;top:1rem;font-size:1.5rem;opacity:.15}
+
+/* CARD COMPONENT */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:1.2rem}
+.card-head{padding:1rem 1.2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-family:var(--h);font-size:.95rem;font-weight:700;color:var(--dark)}
+.card-body{padding:1.2rem}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray);padding:.6rem .8rem;text-align:left;border-bottom:2px solid var(--border);background:var(--light)}
+.data-table td{padding:.7rem .8rem;font-size:.85rem;border-bottom:1px solid var(--border);color:var(--dark)}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:var(--light)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .65rem;border-radius:20px;font-size:.72rem;font-weight:700}
+.badge.green{background:rgba(0,196,125,0.12);color:var(--green)}
+.badge.red{background:rgba(244,67,54,0.1);color:var(--red)}
+.badge.yellow{background:rgba(255,214,0,0.15);color:var(--yellow-d)}
+.badge.blue{background:rgba(21,101,192,0.1);color:var(--blue)}
+.badge.gray{background:var(--light);color:var(--gray)}
+
+/* TICKET FORM */
+.ticket-form .form-group label{color:var(--gray);text-transform:none;font-size:.85rem;font-weight:600;letter-spacing:0}
+.ticket-form input,.ticket-form select,.ticket-form textarea{width:100%;background:var(--light);border:1.5px solid var(--border);color:var(--dark);padding:.7rem 1rem;border-radius:8px;font-size:.9rem;outline:none;transition:border-color .2s}
+.ticket-form input:focus,.ticket-form select:focus,.ticket-form textarea:focus{border-color:var(--blue)}
+.ticket-form textarea{min-height:100px;resize:vertical}
+.submit-btn{background:linear-gradient(135deg,var(--blue),var(--blue-light));color:#fff;padding:.8rem 2rem;border-radius:8px;font-weight:700;font-size:.9rem;border:none;transition:all .2s}
+.submit-btn:hover{opacity:.9;transform:translateY(-1px)}
+
+/* CALENDAR */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:1rem}
+.cal-head{text-align:center;font-size:.72rem;font-weight:700;color:var(--gray);padding:.4rem}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:.82rem;cursor:pointer;transition:all .2s;border:1.5px solid transparent;color:var(--gray)}
+.cal-day:hover{background:var(--blue-pale);color:var(--blue);border-color:var(--blue-pale)}
+.cal-day.selected{background:var(--blue);color:#fff;border-color:var(--blue)}
+.cal-day.booked{background:rgba(244,67,54,0.1);color:var(--red);cursor:not-allowed}
+.cal-day.today{border-color:var(--yellow);color:var(--dark);font-weight:700}
+.cal-day.empty{cursor:default}
+
+/* TIME SLOTS */
+.slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:.6rem;margin-top:1rem}
+.slot{padding:.5rem;border-radius:8px;border:1.5px solid var(--border);text-align:center;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--dark)}
+.slot:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-pale)}
+.slot.sel{background:var(--blue);color:#fff;border-color:var(--blue)}
+.slot.taken{background:var(--light);color:var(--gray);cursor:not-allowed;text-decoration:line-through}
+
+/* PAYMENT */
+.pay-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem;margin-bottom:1rem}
+.pay-amount{font-family:var(--h);font-size:2rem;font-weight:800;color:var(--blue)}
+.pay-method{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:.6rem;margin:1rem 0}
+.pm-opt{border:1.5px solid var(--border);border-radius:8px;padding:.7rem;text-align:center;cursor:pointer;transition:all .2s}
+.pm-opt:hover{border-color:var(--blue)}
+.pm-opt.sel{border-color:var(--blue);background:var(--blue-pale)}
+.pm-opt .pm-ico{font-size:1.5rem;margin-bottom:.2rem}
+.pm-opt .pm-name{font-size:.75rem;font-weight:600;color:var(--gray)}
+
+/* REPORT CARDS */
+.report-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.report-item{background:var(--light);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center}
+.report-ico{font-size:2rem;margin-bottom:.5rem}
+.report-name{font-size:.85rem;font-weight:700;color:var(--dark);margin-bottom:.25rem}
+.report-status{font-size:.78rem}
+
+/* PROGRESS BAR */
+.progress{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--blue-light));transition:width .5s}
+
+/* QUICK ACTIONS */
+.qa-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.8rem}
+.qa-btn{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1rem;text-align:center;cursor:pointer;transition:all .25s}
+.qa-btn:hover{border-color:var(--blue);background:var(--blue-pale);transform:translateY(-2px)}
+.qa-ico{font-size:1.6rem;margin-bottom:.4rem}
+.qa-label{font-size:.8rem;font-weight:600;color:var(--dark)}
+
+/* ALERT */
+.alert{display:flex;align-items:flex-start;gap:.75rem;padding:1rem;border-radius:10px;margin-bottom:.8rem;font-size:.875rem}
+.alert.success{background:rgba(0,196,125,0.08);border:1px solid rgba(0,196,125,0.2);color:var(--green)}
+.alert.warning{background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.2);color:var(--orange)}
+.alert.info{background:var(--blue-pale);border:1px solid rgba(21,101,192,0.2);color:var(--blue)}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .nav-links{display:none}
+  .sidebar{transform:translateX(-100%)}
+  .dash-main{margin-left:0}
+  .form-row{grid-template-columns:1fr}
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.fade-up{animation:fadeUp .4s ease both}
+</style>
+</head>
+<body>
+
+<!-- ══════════ LANDING PAGE ══════════ -->
+<div id="landing" class="page active">
+  <nav class="ln-nav">
+    <div class="nav-brand">
+      <div class="nav-logo-box">💻</div>
+      <div class="nav-name">SMP <span>Tech</span></div>
+    </div>
+    <div class="nav-links">
+      <a href="#services-sec">Services</a>
+      <a href="#pricing-sec">Pricing</a>
+      <a href="#about-sec">About</a>
+      <a href="#contact-sec">Contact</a>
+      <button class="nav-btn" onclick="showLogin()">🔐 School Login</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-grid"></div>
+      <div class="hero-glow"></div>
+      <div class="hero-glow2"></div>
+    </div>
+    <div class="hero-content fade-up">
+      <div class="hero-badge">Karur's #1 IT Partner</div>
+      <h1 class="hero-title">Smart IT Services<br/><span class="acc">At Your Doorstep</span></h1>
+      <p class="hero-sub">Professional computer maintenance, CCTV installation & Annual Maintenance Contracts for schools and offices in Karur, Tamil Nadu.</p>
+      <div class="hero-btns">
+        <button class="btn-prim" onclick="showLogin()">🏫 School Portal Login</button>
+        <button class="btn-sec" onclick="scrollTo('services-sec')">View Services ↓</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><div class="hstat-n">AMC</div><div class="hstat-l">Contracts</div></div>
+        <div class="hstat"><div class="hstat-n">24hr</div><div class="hstat-l">Response</div></div>
+        <div class="hstat"><div class="hstat-n">Karur</div><div class="hstat-l">Local & On-Site</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section" id="services-sec">
+    <div class="section-inner">
+      <p class="sec-tag">What We Do</p>
+      <h2 class="sec-title">Complete IT Services</h2>
+      <p class="sec-sub">Everything your school or office needs — under one AMC contract.</p>
+      <div class="svc-grid">
+        <div class="svc-card"><div class="svc-ico">💻</div><h3>Computer & Laptop Service</h3><p>Full hardware & software maintenance, OS installation, virus removal & performance tuning.</p></div>
+        <div class="svc-card"><div class="svc-ico">📷</div><h3>CCTV Installation</h3><p>Supply, install & maintain CCTV cameras with DVR/NVR setup for complete security coverage.</p></div>
+        <div class="svc-card"><div class="svc-ico">🌐</div><h3>Networking Solutions</h3><p>LAN/WAN setup, Wi-Fi installation, IP camera config & network troubleshooting.</p></div>
+        <div class="svc-card"><div class="svc-ico">📋</div><h3>AMC Support</h3><p>Structured annual contracts with scheduled visits, priority support & health management.</p></div>
+        <div class="svc-card"><div class="svc-ico">🖥️</div><h3>System Sales</h3><p>Supply of desktops, laptops, printers & accessories with full post-sale support.</p></div>
+        <div class="svc-card"><div class="svc-ico">🔧</div><h3>On-Site Repair</h3><p>Quick on-site diagnosis & repair of hardware crashes, network failures, software errors.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="section light" id="pricing-sec">
+    <div class="section-inner">
+      <p class="sec-tag" style="color:var(--blue)">AMC Plans</p>
+      <h2 class="sec-title">Simple Monthly Pricing</h2>
+      <p class="sec-sub">Choose the plan that fits your school or office. No hidden charges.</p>
+      <div class="price-grid">
+        <div class="price-card">
+          <div class="p-name">Basic</div>
+          <div class="p-price">₹330 <small>/ month</small></div>
+          <p class="p-desc">Ideal for small setups</p>
+          <ul class="p-feats">
+            <li>2 Visits per Month</li><li>On-Call Support (Working Hours)</li>
+            <li>Basic Software Support</li><li>Virus Scan & Removal</li><li>System Check</li>
+          </ul>
+          <button class="p-btn outline" onclick="showLogin()">Get Started</button>
+        </div>
+        <div class="price-card pop">
+          <div class="pop-tag">⭐ Most Popular</div>
+          <div class="p-name">Standard</div>
+          <div class="p-price">₹400 <small>/ month</small></div>
+          <p class="p-desc">Best for schools</p>
+          <ul class="p-feats">
+            <li>2 Visits per Month</li><li>24/7 On-Call Support</li>
+            <li>48hr Emergency Service</li><li>Software Installation & Fix</li>
+            <li>Virus Removal & Optimization</li>
+          </ul>
+          <button class="p-btn filled" onclick="showLogin()">Get Started</button>
+        </div>
+        <div class="price-card">
+          <div class="p-name">Premium</div>
+          <div class="p-price">₹600 <small>/ month</small></div>
+          <p class="p-desc">Full coverage plan</p>
+          <ul class="p-feats">
+            <li>4 Visits per Month</li><li>24/7 On-Call Support</li>
+            <li>Same Day Priority Service</li><li>Full Software & Hardware Support</li>
+            <li>OS Installation Included</li><li>Complete System Maintenance</li>
+          </ul>
+          <button class="p-btn outline" onclick="showLogin()">Get Started</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section" id="about-sec">
+    <div class="section-inner" style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center">
+      <div>
+        <p class="sec-tag">About Us</p>
+        <h2 class="sec-title">Local Expertise.<br/>Professional Standards.</h2>
+        <p style="color:rgba(255,255,255,0.55);line-height:1.8;margin-bottom:1.5rem;font-size:.95rem">SMP Tech Solutions is based in Karur, Tamil Nadu. Founded by Ponnudhurai Sakthivel, a professional electronics engineer with MNC experience. We bring corporate-level IT support to local schools and offices at affordable prices.</p>
+        <div style="display:flex;flex-direction:column;gap:.75rem">
+          <div style="display:flex;align-items:center;gap:.75rem;color:rgba(255,255,255,0.7);font-size:.9rem"><span style="color:var(--yellow);font-size:1.1rem">⚡</span> Fast 24-hour response time</div>
+          <div style="display:flex;align-items:center;gap:.75rem;color:rgba(255,255,255,0.7);font-size:.9rem"><span style="color:var(--yellow);font-size:1.1rem">🏠</span> 100% local & on-site service</div>
+          <div style="display:flex;align-items:center;gap:.75rem;color:rgba(255,255,255,0.7);font-size:.9rem"><span style="color:var(--yellow);font-size:1.1rem">🎓</span> School lab specialists</div>
+          <div style="display:flex;align-items:center;gap:.75rem;color:rgba(255,255,255,0.7);font-size:.9rem"><span style="color:var(--yellow);font-size:1.1rem">💰</span> Best price in Karur</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1.5rem;text-align:center">
+          <div style="font-family:var(--h);font-size:2rem;font-weight:800;color:var(--yellow)">3+</div>
+          <div style="font-size:.8rem;color:rgba(255,255,255,0.45)">Years Experience</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1.5rem;text-align:center">
+          <div style="font-family:var(--h);font-size:2rem;font-weight:800;color:var(--yellow)">24h</div>
+          <div style="font-size:.8rem;color:rgba(255,255,255,0.45)">Fast Response</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1.5rem;text-align:center">
+          <div style="font-family:var(--h);font-size:2rem;font-weight:800;color:var(--yellow)">₹0</div>
+          <div style="font-size:.8rem;color:rgba(255,255,255,0.45)">No Call Charges</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1.5rem;text-align:center">
+          <div style="font-family:var(--h);font-size:2rem;font-weight:800;color:var(--yellow)">AMC</div>
+          <div style="font-size:.8rem;color:rgba(255,255,255,0.45)">Annual Plans</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section light" id="contact-sec">
+    <div class="section-inner" style="text-align:center">
+      <p class="sec-tag" style="color:var(--blue)">Get In Touch</p>
+      <h2 class="sec-title">Ready to Get Started?</h2>
+      <p class="sec-sub" style="margin:0 auto 2rem">Call or WhatsApp us today for a free assessment.</p>
+      <div style="display:flex;justify-content:center;gap:1rem;flex-wrap:wrap">
+        <a href="tel:7305289402" style="display:inline-flex;align-items:center;gap:.6rem;background:var(--blue);color:#fff;padding:.9rem 2rem;border-radius:8px;font-weight:700;font-size:1rem">📞 73052 89402</a>
+        <a href="mailto:infospmtechsollution@gmail.com" style="display:inline-flex;align-items:center;gap:.6rem;background:var(--white);color:var(--blue);border:1.5px solid var(--border);padding:.9rem 2rem;border-radius:8px;font-weight:600">✉️ Email Us</a>
+      </div>
+      <p style="margin-top:1.5rem;color:var(--gray);font-size:.85rem">📍 7/114 South Manickapuram, Manjanayakanpatti, Karur – 621301</p>
+      <p style="color:var(--gray);font-size:.78rem;margin-top:.3rem">UDYAM-TN-10-0052893</p>
+    </div>
+  </section>
+
+  <footer class="ln-footer">
+    <p>© 2025 <strong>SMP Tech Solutions</strong> — Karur, Tamil Nadu. All Rights Reserved.</p>
+  </footer>
+</div>
+
+<!-- ══════════ LOGIN PAGE ══════════ -->
+<div id="login" class="page">
+  <div style="min-height:100vh;background:var(--dark);display:flex;align-items:center;justify-content:center;padding:2rem;position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(33,150,243,0.04)1px,transparent 1px),linear-gradient(90deg,rgba(33,150,243,0.04)1px,transparent 1px);background-size:40px 40px"></div>
+    <div style="position:absolute;top:-100px;right:-100px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(21,101,192,0.15),transparent 70%)"></div>
+    <div class="login-wrap fade-up" style="position:relative;z-index:1">
+      <div class="login-logo">
+        <div class="login-logo-box">💻</div>
+        <div class="login-brand">SMP <span>Tech Solutions</span></div>
+        <div class="login-sub">School Customer Portal</div>
+      </div>
+      <div class="login-card">
+        <div class="login-tabs">
+          <button class="ltab active" id="tab-login" onclick="switchTab('login-tab')">Login</button>
+          <button class="ltab" id="tab-register" onclick="switchTab('register-tab')">Register</button>
+        </div>
+        <!-- LOGIN -->
+        <div id="login-tab">
+          <div class="form-group"><label>School / Email</label><input type="text" placeholder="Enter your school name or email" id="l-user"/></div>
+          <div class="form-group"><label>Password</label><input type="password" placeholder="Enter password" id="l-pass"/></div>
+          <button class="login-btn" onclick="doLogin()">Login to Dashboard →</button>
+          <p style="text-align:center;font-size:.78rem;color:rgba(255,255,255,0.3);margin-top:.75rem">Demo: any name + any password</p>
+        </div>
+        <!-- REGISTER -->
+        <div id="register-tab" style="display:none">
+          <div class="form-row">
+            <div class="form-group"><label>School Name</label><input type="text" placeholder="Your school name" id="r-school"/></div>
+            <div class="form-group"><label>Contact Person</label><input type="text" placeholder="HM / Admin name" id="r-contact"/></div>
+          </div>
+          <div class="form-group"><label>Phone</label><input type="tel" placeholder="+91 XXXXX XXXXX" id="r-phone"/></div>
+          <div class="form-group"><label>Email</label><input type="email" placeholder="school@email.com" id="r-email"/></div>
+          <div class="form-group"><label>AMC Plan</label>
+            <select id="r-plan">
+              <option>Basic – ₹330/month</option>
+              <option>Standard – ₹400/month</option>
+              <option>Premium – ₹600/month</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Password</label><input type="password" placeholder="Create password" id="r-pass"/></div>
+            <div class="form-group"><label>Confirm</label><input type="password" placeholder="Confirm password" id="r-pass2"/></div>
+          </div>
+          <button class="login-btn" onclick="doRegister()">Register & Continue →</button>
+        </div>
+      </div>
+      <div class="login-back"><a href="#" onclick="showLanding()">← Back to Website</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ DASHBOARD ══════════ -->
+<div id="dashboard" class="page">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-head">
+      <div class="sb-brand">SMP <span>Tech</span></div>
+      <div class="sb-school" id="sb-school-name">Govt. High School, Karur</div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section">Main</div>
+      <div class="sb-item active" onclick="showPanel('overview')"><span class="ico">🏠</span> Overview</div>
+      <div class="sb-item" onclick="showPanel('reports')"><span class="ico">📊</span> System Reports</div>
+      <div class="sb-section">Support</div>
+      <div class="sb-item" onclick="showPanel('tickets')"><span class="ico">🎫</span> Raise Ticket</div>
+      <div class="sb-item" onclick="showPanel('bookings')"><span class="ico">📅</span> Book Visit</div>
+      <div class="sb-section">Billing</div>
+      <div class="sb-item" onclick="showPanel('payments')"><span class="ico">💳</span> Payments</div>
+      <div class="sb-item" onclick="showPanel('history')"><span class="ico">📜</span> History</div>
+      <div class="sb-section">Account</div>
+      <div class="sb-item" onclick="showPanel('profile')"><span class="ico">👤</span> Profile</div>
+    </nav>
+    <div class="sb-bottom">
+      <div class="sb-user">
+        <div class="sb-avatar" id="sb-avatar">G</div>
+        <div><div class="sb-uname" id="sb-uname">School Admin</div><div class="sb-urole">Standard Plan</div></div>
+        <button class="sb-logout" onclick="showLanding()" title="Logout">🚪</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="dash-main">
+    <div class="dash-topbar">
+      <div class="topbar-title" id="topbar-title">Dashboard Overview</div>
+      <div class="topbar-right">
+        <div class="notif-btn" onclick="showAlert('You have 2 new notifications!')">🔔<div class="notif-dot"></div></div>
+        <div class="topbar-chip">AMC Active</div>
+      </div>
+    </div>
+
+    <div class="dash-content">
+
+      <!-- OVERVIEW PANEL -->
+      <div class="d-panel active" id="panel-overview">
+        <div class="alert info">📢 Your next scheduled visit is on <strong>April 18, 2025</strong>. Our technician will arrive between 10 AM – 12 PM.</div>
+        <div class="stat-grid">
+          <div class="stat-card blue"><div class="stat-ico">🖥️</div><div class="stat-label">Total Systems</div><div class="stat-val">12</div><div class="stat-sub">All registered</div></div>
+          <div class="stat-card green"><div class="stat-ico">✅</div><div class="stat-label">Working Fine</div><div class="stat-val">10</div><div class="stat-sub">83% healthy</div></div>
+          <div class="stat-card yellow"><div class="stat-ico">⚠️</div><div class="stat-label">Need Attention</div><div class="stat-val">2</div><div class="stat-sub">Minor issues</div></div>
+          <div class="stat-card red"><div class="stat-ico">🎫</div><div class="stat-label">Open Tickets</div><div class="stat-val">1</div><div class="stat-sub">In progress</div></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.2rem">
+          <div class="card">
+            <div class="card-head"><div class="card-title">📅 Upcoming Visits</div><button onclick="showPanel('bookings')" style="background:var(--blue-pale);color:var(--blue);border:none;padding:.3rem .75rem;border-radius:6px;font-size:.78rem;font-weight:600">Book New</button></div>
+            <div class="card-body">
+              <table class="data-table">
+                <thead><tr><th>Date</th><th>Time</th><th>Type</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td>Apr 18, 2025</td><td>10:00 AM</td><td>Scheduled Visit</td><td><span class="badge blue">Confirmed</span></td></tr>
+                  <tr><td>Apr 28, 2025</td><td>2:00 PM</td><td>System Check</td><td><span class="badge yellow">Pending</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">💳 Payment Due</div></div>
+            <div class="card-body" style="text-align:center">
+              <div style="font-family:var(--h);font-size:2rem;font-weight:800;color:var(--blue)">₹400</div>
+              <div style="font-size:.8rem;color:var(--gray);margin:.3rem 0 1rem">Due: May 1, 2025 (Standard Plan)</div>
+              <button class="submit-btn" style="width:100%" onclick="showPanel('payments')">Pay Now →</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:0">
+          <div class="card-head"><div class="card-title">⚡ Quick Actions</div></div>
+          <div class="card-body">
+            <div class="qa-grid">
+              <div class="qa-btn" onclick="showPanel('tickets')"><div class="qa-ico">🎫</div><div class="qa-label">Raise Ticket</div></div>
+              <div class="qa-btn" onclick="showPanel('bookings')"><div class="qa-ico">📅</div><div class="qa-label">Book Visit</div></div>
+              <div class="qa-btn" onclick="showPanel('payments')"><div class="qa-ico">💳</div><div class="qa-label">Make Payment</div></div>
+              <div class="qa-btn" onclick="showPanel('reports')"><div class="qa-ico">📊</div><div class="qa-label">View Reports</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPORTS PANEL -->
+      <div class="d-panel" id="panel-reports">
+        <div class="stat-grid">
+          <div class="stat-card blue"><div class="stat-ico">🖥️</div><div class="stat-label">Total Systems</div><div class="stat-val">12</div></div>
+          <div class="stat-card green"><div class="stat-ico">✅</div><div class="stat-label">Healthy</div><div class="stat-val">10</div></div>
+          <div class="stat-card yellow"><div class="stat-ico">⚠️</div><div class="stat-label">Needs Service</div><div class="stat-val">2</div></div>
+          <div class="stat-card blue"><div class="stat-ico">📋</div><div class="stat-label">Last Visit</div><div class="stat-val" style="font-size:1rem">Apr 5</div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div class="card-title">🖥️ System Health Report</div><span style="font-size:.78rem;color:var(--gray)">Last updated: Apr 13, 2025</span></div>
+          <div class="card-body">
+            <table class="data-table">
+              <thead><tr><th>System ID</th><th>Type</th><th>Health</th><th>Last Service</th><th>Next Service</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>SYS-001</td><td>Desktop</td><td><div style="display:flex;align-items:center;gap:.5rem"><div class="progress" style="width:80px"><div class="progress-fill" style="width:90%"></div></div>90%</div></td><td>Apr 5, 2025</td><td>May 5, 2025</td><td><span class="badge green">Healthy</span></td></tr>
+                <tr><td>SYS-002</td><td>Desktop</td><td><div style="display:flex;align-items:center;gap:.5rem"><div class="progress" style="width:80px"><div class="progress-fill" style="width:85%"></div></div>85%</div></td><td>Apr 5, 2025</td><td>May 5, 2025</td><td><span class="badge green">Healthy</span></td></tr>
+                <tr><td>SYS-003</td><td>Laptop</td><td><div style="display:flex;align-items:center;gap:.5rem"><div class="progress" style="width:80px"><div class="progress-fill" style="width:45%;background:var(--orange)"></div></div>45%</div></td><td>Mar 20, 2025</td><td>Apr 18, 2025</td><td><span class="badge yellow">Needs Attention</span></td></tr>
+                <tr><td>SYS-004</td><td>Desktop</td><td><div style="display:flex;align-items:center;gap:.5rem"><div class="progress" style="width:80px"><div class="progress-fill" style="width:30%;background:var(--red)"></div></div>30%</div></td><td>Mar 10, 2025</td><td>Apr 18, 2025</td><td><span class="badge red">Critical</span></td></tr>
+                <tr><td>SYS-005</td><td>Desktop</td><td><div style="display:flex;align-items:center;gap:.5rem"><div class="progress" style="width:80px"><div class="progress-fill" style="width:92%"></div></div>92%</div></td><td>Apr 5, 2025</td><td>May 5, 2025</td><td><span class="badge green">Healthy</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div class="card-title">📋 Service Visit History</div></div>
+          <div class="card-body">
+            <table class="data-table">
+              <thead><tr><th>Date</th><th>Technician</th><th>Work Done</th><th>Systems Serviced</th><th>Report</th></tr></thead>
+              <tbody>
+                <tr><td>Apr 5, 2025</td><td>Ponnudhurai</td><td>Regular Maintenance, OS Update</td><td>10 systems</td><td><button style="background:var(--blue-pale);color:var(--blue);border:none;padding:.2rem .6rem;border-radius:4px;font-size:.75rem;cursor:pointer">📄 View</button></td></tr>
+                <tr><td>Mar 20, 2025</td><td>Ponnudhurai</td><td>Virus Removal, Software Install</td><td>8 systems</td><td><button style="background:var(--blue-pale);color:var(--blue);border:none;padding:.2rem .6rem;border-radius:4px;font-size:.75rem;cursor:pointer">📄 View</button></td></tr>
+                <tr><td>Mar 5, 2025</td><td>Ponnudhurai</td><td>Hardware Check, Cleaning</td><td>12 systems</td><td><button style="background:var(--blue-pale);color:var(--blue);border:none;padding:.2rem .6rem;border-radius:4px;font-size:.75rem;cursor:pointer">📄 View</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TICKETS PANEL -->
+      <div class="d-panel" id="panel-tickets">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;align-items:start">
+          <div class="card ticket-form">
+            <div class="card-head"><div class="card-title">🎫 Raise New Ticket</div></div>
+            <div class="card-body">
+              <div class="form-group"><label>Issue Category</label>
+                <select id="t-cat">
+                  <option>-- Select Category --</option>
+                  <option>Computer / Laptop Problem</option>
+                  <option>Network / Internet Issue</option>
+                  <option>CCTV / Camera Issue</option>
+                  <option>Software Problem</option>
+                  <option>Printer Issue</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="form-group"><label>System ID (if specific)</label><input type="text" placeholder="e.g. SYS-003 or leave blank for all" id="t-sys"/></div>
+              <div class="form-group"><label>Priority</label>
+                <select id="t-pri">
+                  <option>Normal</option>
+                  <option>Urgent</option>
+                  <option>Critical – Same Day</option>
+                </select>
+              </div>
+              <div class="form-group"><label>Describe the Issue</label><textarea placeholder="Describe what happened, when it started, what you see..." id="t-desc"></textarea></div>
+              <button class="submit-btn" onclick="submitTicket()">Submit Ticket →</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">📋 My Tickets</div></div>
+            <div class="card-body" id="tickets-list">
+              <table class="data-table">
+                <thead><tr><th>ID</th><th>Issue</th><th>Priority</th><th>Status</th><th>Date</th></tr></thead>
+                <tbody>
+                  <tr><td>#T-045</td><td>SYS-003 slow performance</td><td><span class="badge yellow">Urgent</span></td><td><span class="badge blue">In Progress</span></td><td>Apr 10</td></tr>
+                  <tr><td>#T-038</td><td>Network disconnecting</td><td><span class="badge gray">Normal</span></td><td><span class="badge green">Resolved</span></td><td>Mar 28</td></tr>
+                  <tr><td>#T-031</td><td>Printer not working</td><td><span class="badge gray">Normal</span></td><td><span class="badge green">Resolved</span></td><td>Mar 15</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOOKINGS PANEL -->
+      <div class="d-panel" id="panel-bookings">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;align-items:start">
+          <div class="card">
+            <div class="card-head"><div class="card-title">📅 Select Visit Date</div><span style="font-size:.78rem;color:var(--gray)">April 2025</span></div>
+            <div class="card-body">
+              <div class="cal-grid">
+                <div class="cal-head">Sun</div><div class="cal-head">Mon</div><div class="cal-head">Tue</div><div class="cal-head">Wed</div><div class="cal-head">Thu</div><div class="cal-head">Fri</div><div class="cal-head">Sat</div>
+                <div class="cal-day empty"></div><div class="cal-day empty"></div><div class="cal-day">1</div><div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div>
+                <div class="cal-day">6</div><div class="cal-day">7</div><div class="cal-day">8</div><div class="cal-day">9</div><div class="cal-day">10</div><div class="cal-day">11</div><div class="cal-day">12</div>
+                <div class="cal-day today">13</div><div class="cal-day">14</div><div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day">17</div><div class="cal-day booked">18</div><div class="cal-day">19</div>
+                <div class="cal-day">20</div><div class="cal-day">21</div><div class="cal-day selected">22</div><div class="cal-day">23</div><div class="cal-day">24</div><div class="cal-day">25</div><div class="cal-day">26</div>
+                <div class="cal-day">27</div><div class="cal-day booked">28</div><div class="cal-day">29</div><div class="cal-day">30</div>
+              </div>
+              <p style="font-size:.75rem;color:var(--gray);margin-top:.75rem;display:flex;gap:1rem">
+                <span style="display:flex;align-items:center;gap:.3rem"><span style="width:10px;height:10px;background:var(--blue);border-radius:3px;display:inline-block"></span>Selected</span>
+                <span style="display:flex;align-items:center;gap:.3rem"><span style="width:10px;height:10px;background:rgba(244,67,54,0.15);border-radius:3px;display:inline-block"></span>Booked</span>
+                <span style="display:flex;align-items:center;gap:.3rem"><span style="width:10px;height:10px;border:2px solid var(--yellow);border-radius:3px;display:inline-block"></span>Today</span>
+              </p>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <div class="card-head"><div class="card-title">⏰ Select Time Slot</div><span style="font-size:.78rem;color:var(--gray)">Apr 22, 2025</span></div>
+              <div class="card-body">
+                <div class="slot-grid">
+                  <div class="slot">9:00 AM</div><div class="slot sel">10:00 AM</div>
+                  <div class="slot taken">11:00 AM</div><div class="slot">12:00 PM</div>
+                  <div class="slot">1:00 PM</div><div class="slot">2:00 PM</div>
+                  <div class="slot taken">3:00 PM</div><div class="slot">4:00 PM</div>
+                </div>
+              </div>
+            </div>
+            <div class="card ticket-form" style="margin-top:0">
+              <div class="card-head"><div class="card-title">📝 Visit Details</div></div>
+              <div class="card-body">
+                <div class="form-group"><label>Visit Type</label>
+                  <select>
+                    <option>Regular Maintenance</option>
+                    <option>Issue Fix</option>
+                    <option>System Check</option>
+                    <option>New Installation</option>
+                  </select>
+                </div>
+                <div class="form-group"><label>Notes for Technician</label><textarea placeholder="Any specific things to check or bring..." style="min-height:70px"></textarea></div>
+                <button class="submit-btn" style="width:100%" onclick="showAlert('✅ Visit booked for Apr 22 at 10:00 AM! You will receive a confirmation call.')">Confirm Booking →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAYMENTS PANEL -->
+      <div class="d-panel" id="panel-payments">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;align-items:start">
+          <div>
+            <div class="card">
+              <div class="card-head"><div class="card-title">💳 Current Bill</div><span class="badge yellow">Due May 1</span></div>
+              <div class="card-body">
+                <div style="text-align:center;padding:1rem 0">
+                  <div style="font-size:.85rem;color:var(--gray);margin-bottom:.3rem">Standard AMC Plan — May 2025</div>
+                  <div class="pay-amount">₹400</div>
+                  <div style="font-size:.8rem;color:var(--gray);margin-top:.3rem">12 Systems × ₹33.33/month</div>
+                </div>
+                <div style="background:var(--light);border-radius:8px;padding:1rem;margin:1rem 0">
+                  <div style="display:flex;justify-content:space-between;font-size:.85rem;padding:.25rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--gray)">AMC Plan</span><span>₹400</span></div>
+                  <div style="display:flex;justify-content:space-between;font-size:.85rem;padding:.25rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--gray)">GST (18%)</span><span>₹72</span></div>
+                  <div style="display:flex;justify-content:space-between;font-size:.92rem;font-weight:700;padding:.4rem 0;color:var(--blue)"><span>Total</span><span>₹472</span></div>
+                </div>
+                <div style="margin-bottom:.75rem">
+                  <div style="font-size:.82rem;font-weight:600;color:var(--gray);margin-bottom:.5rem">PAYMENT METHOD</div>
+                  <div class="pay-method">
+                    <div class="pm-opt sel" onclick="selectPM(this)"><div class="pm-ico">📱</div><div class="pm-name">UPI</div></div>
+                    <div class="pm-opt" onclick="selectPM(this)"><div class="pm-ico">🏦</div><div class="pm-name">Bank Transfer</div></div>
+                    <div class="pm-opt" onclick="selectPM(this)"><div class="pm-ico">💵</div><div class="pm-name">Cash</div></div>
+                  </div>
+                </div>
+                <div style="background:var(--blue-pale);border-radius:8px;padding:.75rem;margin-bottom:1rem;font-size:.82rem;color:var(--blue)">
+                  📱 UPI ID: <strong>73052 89402@upi</strong><br/>
+                  📲 Pay to: <strong>Ponnudhurai Sakthivel</strong>
+                </div>
+                <button class="submit-btn" style="width:100%" onclick="showAlert('✅ Payment of ₹472 submitted! Our team will confirm within 24 hours.')">Pay ₹472 Now →</button>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">📜 Payment History</div></div>
+            <div class="card-body">
+              <table class="data-table">
+                <thead><tr><th>Month</th><th>Amount</th><th>Method</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td>Apr 2025</td><td>₹472</td><td>UPI</td><td><span class="badge green">Paid</span></td></tr>
+                  <tr><td>Mar 2025</td><td>₹472</td><td>UPI</td><td><span class="badge green">Paid</span></td></tr>
+                  <tr><td>Feb 2025</td><td>₹472</td><td>Cash</td><td><span class="badge green">Paid</span></td></tr>
+                  <tr><td>Jan 2025</td><td>₹472</td><td>UPI</td><td><span class="badge green">Paid</span></td></tr>
+                  <tr><td>Dec 2024</td><td>₹472</td><td>Bank Transfer</td><td><span class="badge green">Paid</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HISTORY PANEL -->
+      <div class="d-panel" id="panel-history">
+        <div class="card">
+          <div class="card-head"><div class="card-title">📜 Complete Service History</div></div>
+          <div class="card-body">
+            <table class="data-table">
+              <thead><tr><th>Date</th><th>Type</th><th>Technician</th><th>Work Done</th><th>Systems</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Apr 5, 2025</td><td>Regular Visit</td><td>Ponnudhurai</td><td>Maintenance, OS Update, Virus Check</td><td>10</td><td><span class="badge green">Completed</span></td></tr>
+                <tr><td>Mar 28, 2025</td><td>Emergency</td><td>Ponnudhurai</td><td>Network Issue Fix</td><td>1</td><td><span class="badge green">Completed</span></td></tr>
+                <tr><td>Mar 20, 2025</td><td>Regular Visit</td><td>Ponnudhurai</td><td>Virus Removal, Software Install</td><td>8</td><td><span class="badge green">Completed</span></td></tr>
+                <tr><td>Mar 5, 2025</td><td>Regular Visit</td><td>Ponnudhurai</td><td>Hardware Check, System Cleaning</td><td>12</td><td><span class="badge green">Completed</span></td></tr>
+                <tr><td>Feb 20, 2025</td><td>Regular Visit</td><td>Ponnudhurai</td><td>OS Updates, Performance Tuning</td><td>12</td><td><span class="badge green">Completed</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROFILE PANEL -->
+      <div class="d-panel" id="panel-profile">
+        <div style="display:grid;grid-template-columns:1fr 2fr;gap:1.2rem;align-items:start">
+          <div class="card" style="text-align:center">
+            <div class="card-body">
+              <div style="width:72px;height:72px;background:var(--blue);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;color:#fff;margin:0 auto 1rem" id="profile-avatar">G</div>
+              <div style="font-family:var(--h);font-size:1.1rem;font-weight:800;color:var(--dark)" id="profile-name">Govt. High School</div>
+              <div style="font-size:.82rem;color:var(--gray);margin:.2rem 0 1rem">Karur, Tamil Nadu</div>
+              <span class="badge blue">Standard AMC Plan</span>
+              <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
+                <div style="font-size:.8rem;color:var(--gray);margin-bottom:.3rem">AMC Valid Until</div>
+                <div style="font-size:1rem;font-weight:700;color:var(--green)">Dec 31, 2025</div>
+              </div>
+            </div>
+          </div>
+          <div class="card ticket-form">
+            <div class="card-head"><div class="card-title">👤 School Profile</div><button onclick="showAlert('Profile updated!')" style="background:var(--blue-pale);color:var(--blue);border:none;padding:.3rem .75rem;border-radius:6px;font-size:.78rem;font-weight:600">Save Changes</button></div>
+            <div class="card-body">
+              <div class="form-row">
+                <div class="form-group"><label>School Name</label><input type="text" value="Govt. High School, Karur" id="prof-school"/></div>
+                <div class="form-group"><label>Contact Person</label><input type="text" value="K. Murugesan (Headmaster)"/></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label>Phone</label><input type="tel" value="+91 98765 43210"/></div>
+                <div class="form-group"><label>Email</label><input type="email" value="ghskarur@tnschools.gov.in"/></div>
+              </div>
+              <div class="form-group"><label>Address</label><input type="text" value="School Road, Karur – 639001"/></div>
+              <div class="form-row">
+                <div class="form-group"><label>Number of Systems</label><input type="number" value="12"/></div>
+                <div class="form-group"><label>AMC Plan</label><select><option>Basic – ₹330/month</option><option selected>Standard – ₹400/month</option><option>Premium – ₹600/month</option></select></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end dash-content -->
+  </div><!-- end dash-main -->
+</div><!-- end dashboard -->
+
+<!-- TOAST NOTIFICATION -->
+<div id="toast" style="position:fixed;bottom:2rem;right:2rem;background:var(--dark);color:#fff;padding:.9rem 1.4rem;border-radius:10px;font-size:.88rem;font-weight:500;border-left:4px solid var(--green);box-shadow:0 8px 30px rgba(0,0,0,0.3);transform:translateY(100px);opacity:0;transition:all .3s;z-index:9999;max-width:300px"></div>
+
+<script>
+// ── PAGE ROUTING ──────────────────────────────────────
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function showLanding(){ showPage('landing'); }
+function showLogin(){ showPage('login'); }
+
+// ── LANDING SCROLL ────────────────────────────────────
+function scrollTo(id){ document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); }
+
+// ── LOGIN TABS ────────────────────────────────────────
+function switchTab(tab){
+  document.getElementById('login-tab').style.display = tab==='login-tab'?'block':'none';
+  document.getElementById('register-tab').style.display = tab==='register-tab'?'block':'none';
+  document.getElementById('tab-login').classList.toggle('active', tab==='login-tab');
+  document.getElementById('tab-register').classList.toggle('active', tab==='register-tab');
+}
+
+// ── AUTH ──────────────────────────────────────────────
+function doLogin(){
+  const u = document.getElementById('l-user').value.trim() || 'Demo School';
+  const p = document.getElementById('l-pass').value;
+  if(!u){ showToast('⚠️ Please enter school name'); return; }
+  const name = u.length > 2 ? u : 'Demo School';
+  setupDashboard(name);
+  showPage('dashboard');
+  showPanel('overview');
+  showToast('✅ Welcome back! Login successful.');
+}
+
+function doRegister(){
+  const school = document.getElementById('r-school').value.trim();
+  if(!school){ showToast('⚠️ Please enter school name'); return; }
+  setupDashboard(school);
+  showPage('dashboard');
+  showPanel('overview');
+  showToast('🎉 Registration successful! Welcome to SMP Portal.');
+}
+
+function setupDashboard(name){
+  const short = name.charAt(0).toUpperCase();
+  document.getElementById('sb-school-name').textContent = name;
+  document.getElementById('sb-uname').textContent = name.length > 20 ? name.substr(0,18)+'…' : name;
+  document.getElementById('sb-avatar').textContent = short;
+  document.getElementById('profile-avatar').textContent = short;
+  document.getElementById('profile-name').textContent = name;
+  if(document.getElementById('prof-school')) document.getElementById('prof-school').value = name;
+}
+
+// ── DASHBOARD NAV ─────────────────────────────────────
+const panelTitles = {
+  overview:'Dashboard Overview', reports:'System Reports',
+  tickets:'Support Tickets', bookings:'Book a Visit',
+  payments:'Payments & Billing', history:'Service History', profile:'My Profile'
+};
+function showPanel(id){
+  document.querySelectorAll('.d-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  const panel = document.getElementById('panel-'+id);
+  if(panel) panel.classList.add('active');
+  document.getElementById('topbar-title').textContent = panelTitles[id] || 'Dashboard';
+  // highlight sidebar item
+  document.querySelectorAll('.sb-item').forEach(item=>{
+    if(item.textContent.toLowerCase().includes(id.substr(0,4).toLowerCase()) ||
+       (id==='overview' && item.textContent.includes('Overview')) ||
+       (id==='reports' && item.textContent.includes('Reports')) ||
+       (id==='tickets' && item.textContent.includes('Ticket')) ||
+       (id==='bookings' && item.textContent.includes('Book')) ||
+       (id==='payments' && item.textContent.includes('Payment')) ||
+       (id==='history' && item.textContent.includes('History')) ||
+       (id==='profile' && item.textContent.includes('Profile'))
+    ) item.classList.add('active');
+  });
+}
+
+// ── TICKET SUBMIT ─────────────────────────────────────
+function submitTicket(){
+  const cat = document.getElementById('t-cat').value;
+  const desc = document.getElementById('t-desc').value;
+  if(cat === '-- Select Category --'){ showToast('⚠️ Please select issue category'); return; }
+  if(!desc.trim()){ showToast('⚠️ Please describe the issue'); return; }
+  showToast('🎫 Ticket submitted! Our team will respond within 24 hours.');
+  document.getElementById('t-cat').value = '-- Select Category --';
+  document.getElementById('t-sys').value = '';
+  document.getElementById('t-desc').value = '';
+}
+
+// ── PAYMENT METHOD ───────────────────────────────────
+function selectPM(el){
+  document.querySelectorAll('.pm-opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+// ── CALENDAR ─────────────────────────────────────────
+document.querySelectorAll('.cal-day:not(.empty):not(.booked)').forEach(d=>{
+  d.addEventListener('click',function(){
+    document.querySelectorAll('.cal-day').forEach(x=>x.classList.remove('selected'));
+    this.classList.add('selected');
+  });
+});
+document.querySelectorAll('.slot:not(.taken)').forEach(s=>{
+  s.addEventListener('click',function(){
+    document.querySelectorAll('.slot').forEach(x=>x.classList.remove('sel'));
+    this.classList.add('sel');
+  });
+});
+
+// ── TOAST ─────────────────────────────────────────────
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.transform = 'translateY(0)';
+  t.style.opacity = '1';
+  setTimeout(()=>{ t.style.transform = 'translateY(100px)'; t.style.opacity = '0'; }, 3500);
+}
+function showAlert(msg){ showToast(msg); }
+</script>
+</body>
+</html>
